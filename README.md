@@ -20,7 +20,7 @@ It helps you to structure database queries easly without creating overhead.
 
 use ElzeKool\FluentDbal\FluentDbal;
 
-$pdo = new \PDO('mysql:host=127.0.0.1;dbname=world', 'root', 'digi*klaar');
+$pdo = new \PDO('mysql:host=127.0.0.1;dbname=world', '<<username>>', '<<password>>');
 $dbal = new FluentDbal($pdo);
 
 $query = $dbal
