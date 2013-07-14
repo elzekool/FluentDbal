@@ -17,10 +17,8 @@ It helps you to structure database queries easly without creating overhead.
 ## Example
 ```php
 
+$pdo = new \PDO('mysql:host=127.0.0.1;dbname=world', '', '');
 
-use ElzeKool\FluentDbal\FluentDbal;
-
-$pdo = new \PDO('mysql:host=127.0.0.1;dbname=world', '<<username>>', '<<password>>');
 $dbal = new FluentDbal($pdo);
 
 $query = $dbal
@@ -28,13 +26,17 @@ $query = $dbal
     ->select('city.Name,country.name, city.District')
     ->from('city')
     ->leftJoin('country', 'country.Code = city.CountryCode')
-    ->where('city.CountryCode = ?', 'NLD')
+    ->where('city.CountryCode = ?', 'NLD')        
+        
+    // Orderby can be repeated
+    ->orderby('city.Population','DESC')
+    ->orderby('city.Name','ASC')
+        
     ->limit(1);
     
 $city = $query->execute();
 
 print_r($city->fetch());
-
 // stdClass Object
 // (
 //    [Name] => Amsterdam

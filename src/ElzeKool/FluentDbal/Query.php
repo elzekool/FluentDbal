@@ -3,6 +3,7 @@
 namespace ElzeKool\FluentDbal;
 
 use ElzeKool\FluentDbal\Exception\DbalException;
+use ElzeKool\FluentDbal\SqlLoggerInterface;
 
 /**
  * Database Query
@@ -19,6 +20,12 @@ class Query
      * @var \PDO
      */
     private $Pdo = null;
+    
+    /**
+     * SQL Logger
+     * @var SqlLoggerInterface
+     */
+    private $SqlLogger;
 
     /**
      * Type
@@ -106,11 +113,13 @@ class Query
      *
      * @see \ElzeKool\FluentDbal\FluentDbal
      *
-     * @param PDO     $pdo       PDO Connection
+     * @param \PDO               $pdo        PDO instance
+     * @param SqlLoggerInterface $sql_logger SQL Logger
      */
-    public function __construct(\PDO $pdo)
+    public function __construct(\PDO $pdo, SqlLoggerInterface $sql_logger = null) 
     {
         $this->Pdo = $pdo;
+        $this->SqlLogger = $sql_logger;
     }
 
     /**
@@ -561,7 +570,7 @@ class Query
     /**
      * Execute Query and return result
      *
-     * @param mixed[] $params Override params
+     * @param mixed[] $params Override parameters
      *
      * @return \PDOStatement Executed statement
      */
@@ -581,12 +590,24 @@ class Query
         if ($params === null) {
             $params = $this->Parameters;
         }
+        
+        $start = microtime(true);
 
         if (!$this->Prepared->execute($params)) {
             $error = $this->Prepared->errorInfo();
             $exception = new DbalException('[' . $error[0] . '] ' . $error[2]);
             $exception->setPdoStatement($this->Prepared);
             throw $exception;
+        }
+        
+        $end = microtime(true);
+        if ($this->SqlLogger !== null) {
+            $this->SqlLogger->log(
+                $this->getQuery(), 
+                $params, 
+                floor(($end-$start)*1000), 
+                $this->Prepared
+            );
         }
 
         return $this->Prepared;

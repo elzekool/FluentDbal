@@ -3,6 +3,7 @@
 namespace ElzeKool\FluentDbal;
 
 use ElzeKool\FluentDbal\Query;
+use ElzeKool\FluentDbal\SqlLoggerInterface;
 
 /**
  * Easy to use and framework independant fluent database abstraction layer on top of PDO
@@ -19,13 +20,21 @@ class FluentDbal
     private $Pdo;
 
     /**
+     * SQL Logger
+     * @var SqlLoggerInterface
+     */
+    private $SqlLogger;
+    
+    /**
      * Constructor
      * 
-     * @param \PDO $pdo PDO instance
+     * @param \PDO               $pdo        PDO instance
+     * @param SqlLoggerInterface $sql_logger SQL Logger
      */
-    public function __construct(\PDO $pdo) 
+    public function __construct(\PDO $pdo, SqlLoggerInterface $sql_logger = null) 
     {
         $this->Pdo = $pdo;
+        $this->SqlLogger = $sql_logger;
     }
     
     /**
@@ -78,7 +87,7 @@ class FluentDbal
      */
     public function newQuery() 
     {
-        return new Query($this->Pdo);
+        return new Query($this->Pdo, $this->SqlLogger);
     }
     
     /**
