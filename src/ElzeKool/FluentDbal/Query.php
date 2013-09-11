@@ -268,6 +268,28 @@ class Query
     }
 
     /**
+     * Handle Parameters
+     *
+     * @param mixed[] $args   Arguments (fetched with func_get_args)
+     * @param int     $offset Number of arguments to skip
+     *
+     * @return void
+     */
+    private function handleParams($args, $offset = 1) {
+        $n_args = count($args);
+        if ($n_args <= $offset) {
+            return;
+        }
+        if ($n_args == ($offset+1) AND is_array($args[$offset])) {
+            $this->Parameters = array_merge($this->Parameters, $args[$offset]);
+            return;
+        }
+        for($i = $offset; $i < $n_args; $i++) {
+            $this->Parameters[] = $args[$i];
+        }
+    }
+
+    /**
      * Custom SQL
      *
      * Accepts more parameters for position based parameters
@@ -281,13 +303,7 @@ class Query
         $this->Prepared = null;
         $this->CustomSQL = $sql;
         $this->setType('custom');
-
-        if (func_num_args() > 1) {
-            for ($x = 1; $x < func_num_args(); $x++) {
-                $this->Parameters[] = func_get_arg($x);
-            }
-        }
-
+        $this->handleParams(func_get_args(), 1);
         return $this;
     }
 
@@ -408,11 +424,7 @@ class Query
     {
         $this->Prepared = null;
         $this->Where = array_merge($this->Where, (array) $conditions);
-        if (func_num_args() > 1) {
-            for ($x = 1; $x < func_num_args(); $x++) {
-                $this->Parameters[] = func_get_arg($x);
-            }
-        }
+        $this->handleParams(func_get_args(), 1);
         return $this;
     }
 
@@ -528,11 +540,7 @@ class Query
             throw new DbalException('Set only allowed for insert/update queries');
         }
         $this->Values = array_merge($this->Values, (array) $values);
-        if (func_num_args() > 1) {
-            for ($x = 1; $x < func_num_args(); $x++) {
-                $this->Parameters[] = func_get_arg($x);
-            }
-        }
+        $this->handleParams(func_get_args(), 1);
         return $this;
     }
 
