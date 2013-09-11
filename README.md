@@ -46,6 +46,15 @@ print_r($city->fetch());
 
 ```
 
+## Changelog
+**11-09-2013**: Allow usage of named parameters while building query
+For the functions *custom*, *set*, *where* it is now posible to directly add named parameters, to
+use this add just one parameter of the type array, with the key as parameter name. If you need to set
+multiple parameters add this in the same array. It is NOT posible to mix numbered and named parameters.
+
+Example: ```->where('city.CountryCode = :cc', array(':cc' => 'NLD'))```
+
+
 
 ## License
 
