@@ -536,8 +536,8 @@ class Query
     public function set($values) 
     {
         $this->Prepared = null;
-        if (!in_array($this->Type, array('insert', 'update'))) {
-            throw new DbalException('Set only allowed for insert/update queries');
+        if (!in_array($this->Type, array('insert', 'replace', 'update'))) {
+            throw new DbalException('Set only allowed for insert/replace/update queries');
         }
         $this->Values = array_merge($this->Values, (array) $values);
         $this->handleParams(func_get_args(), 1);
