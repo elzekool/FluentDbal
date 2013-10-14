@@ -2,7 +2,7 @@
     "name": "elzekool/fluent_dbal",
     "license": "MIT",
     "description": "Easy to use and framework independant fluent database abstraction layer on top of PDO.",
-    "version": "0.2.0",
+    "version": "0.3.2",
     "keywords": ["library", "dbal", "database", "pdo", "fluent"],
     "homepage" : "https://github.com/elzekool/FluentDbal",
     "authors": [
